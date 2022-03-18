@@ -31,8 +31,10 @@ rollbar.log("Hello world!");
 
 app.get('/api/robots', (req, res) => {
     try {
+        rollbar.log("Robots sent")
         res.status(200).send(botsArr)
     } catch (error) {
+        rollbar.error("Error getting bots")
         console.log('ERROR GETTING BOTS', error)
         res.sendStatus(400)
     }
@@ -40,6 +42,7 @@ app.get('/api/robots', (req, res) => {
 
 app.get('/api/robots/five', (req, res) => {
     try {
+        rollbar.info("Shuffled bots sent")
         let shuffled = shuffleArray(bots)
         let choices = shuffled.slice(0, 5)
         let compDuo = shuffled.slice(6, 8)
@@ -52,6 +55,7 @@ app.get('/api/robots/five', (req, res) => {
 
 app.post('/api/duel', (req, res) => {
     try {
+        rollbar.info("Duel excecuted")
         // getting the duos from the front end
         let {compDuo, playerDuo} = req.body
 
@@ -76,6 +80,7 @@ app.post('/api/duel', (req, res) => {
             res.status(200).send('You won!')
         }
     } catch (error) {
+        rollbar.error("Unable to excecute duel")
         console.log('ERROR DUELING', error)
         res.sendStatus(400)
     }
@@ -89,6 +94,8 @@ app.get('/api/player', (req, res) => {
         res.sendStatus(400)
     }
 })
+
+app.use(rollbar.errorHandler())
 
 const port = process.env.PORT || 3000
 
